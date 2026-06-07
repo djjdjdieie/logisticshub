@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчеты - LogisticsHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Левая боковая панель -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">📦</div>
+                    <h1>LogisticsHub</h1>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span>Товары</span>
+                </a>
+                <a href="warehouses.html" class="nav-item">
+                    <span class="nav-icon">🏭</span>
+                    <span>Склады</span>
+                </a>
+                <a href="deliveries.html" class="nav-item">
+                    <span class="nav-icon">🚚</span>
+                    <span>Поставки</span>
+                </a>
+                <a href="reports.html" class="nav-item active">
+                    <span class="nav-icon">📈</span>
+                    <span>Отчеты</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <p class="user-name">Администратор</p>
+                        <p class="user-role">Менеджер</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="app.logout()">Выход</button>
+            </div>
+        </aside>
+
+        <!-- Главная область -->
+        <main class="main-content">
+            <!-- Верхняя панель -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Поиск отчетов...">
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <div class="top-bar-actions">
+                    <div class="current-date" id="currentDate"></div>
+                </div>
+            </header>
+
+            <!-- Содержимое страницы -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>Аналитика и отчеты</h1>
+                    <p>Детальная аналитика движения товаров и продуктивности</p>
+                </div>
+
+                <!-- Графики -->
+                <section class="charts-section">
+                    <div class="chart-container large">
+                        <h2>Движение товаров по месяцам</h2>
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h2>Товары по категориям</h2>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </section>
+
+                <section class="charts-section">
+                    <div class="chart-container">
+                        <h2>Распределение по складам</h2>
+                        <canvas id="warehouseChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h2>Статус поставок</h2>
+                        <canvas id="deliveryStatusChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Статистика -->
+                <section class="stats-section">
+                    <h2>Общая статистика</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Всего товаров</h3>
+                            <p class="stat-value" id="totalProductsReport">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Товаров в пути</h3>
+                            <p class="stat-value" id="productsInTransit">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Всего поставок</h3>
+                            <p class="stat-value" id="totalDeliveries">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Среднее на складе</h3>
+                            <p class="stat-value" id="avgWarehouse">0</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast уведомления -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const reports = {
+            charts: {},
+
+            init() {
+                this.renderCharts();
+                this.renderStats();
+            },
+
+            renderCharts() {
+                // Движение товаров по месяцам
+                const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+                const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн'];
+                const monthlyData = [45, 52, 48, 61, 55, 67];
+
+                this.charts.monthly = new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Товары добавлены',
+                            data: monthlyData,
+                            borderColor: '#7C3AED',
+                            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#7C3AED',
+                            pointBorderColor: '#fff',
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+
+                // Товары по категориям
+                const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+                const categories = ['Электроника', 'Одежда', 'Продукты', 'Мебель', 'Прочее'];
+                const categoryData = [15, 20, 12, 8, 5];
+
+                this.charts.category = new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                            data: categoryData,
+                            backgroundColor: [
+                                '#7C3AED',
+                                '#8B5CF6',
+                                '#06B6D4',
+                                '#00D9FF',
+                                '#A78BFA'
+                            ],
+                            borderColor: '#0F172A',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        }
+                    }
+                });
+
+                // Распределение по складам
+                const warehouseCtx = document.getElementById('warehouseChart').getContext('2d');
+                const warehouses = storage.getWarehouses();
+                const warehouseLabels = warehouses.map(w => w.name);
+                const warehouseData = warehouses.map(w => storage.getProductsByWarehouse(w.id).length);
+
+                this.charts.warehouse = new Chart(warehouseCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: warehouseLabels,
+                        datasets: [{
+                            label: 'Товаров на складе',
+                            data: warehouseData,
+                            backgroundColor: '#7C3AED',
+                            borderColor: '#8B5CF6',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            y: {
+                                ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            }
+                        }
+                    }
+                });
+
+                // Статус поставок
+                const deliveries = storage.getDeliveries();
+                const statusCounts = {
+                    'Доставлено': deliveries.filter(d => d.status === 'Доставлено').length,
+                    'В пути': deliveries.filter(d => d.status === 'В пути').length,
+                    'Обработка': deliveries.filter(d => d.status === 'Обработка').length
+                };
+
+                const deliveryStatusCtx = document.getElementById('deliveryStatusChart').getContext('2d');
+                this.charts.deliveryStatus = new Chart(deliveryStatusCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(statusCounts),
+                        datasets: [{
+                            data: Object.values(statusCounts),
+                            backgroundColor: ['#06B6D4', '#8B5CF6', '#7C3AED'],
+                            borderColor: '#0F172A',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        }
+                    }
+                });
+            },
+
+            renderStats() {
+                const products = storage.getProducts();
+                const deliveries = storage.getDeliveries();
+                const warehouses = storage.getWarehouses();
+
+                const totalProducts = products.length;
+                const productsInTransit = deliveries.filter(d => d.status === 'В пути').reduce((sum, d) => sum + d.quantity, 0);
+                const avgWarehouse = warehouses.length > 0 ? Math.round(totalProducts / warehouses.length) : 0;
+
+                document.getElementById('totalProductsReport').textContent = totalProducts;
+                document.getElementById('productsInTransit').textContent = productsInTransit;
+                document.getElementById('totalDeliveries').textContent = deliveries.length;
+                document.getElementById('avgWarehouse').textContent = avgWarehouse;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            reports.init();
+        });
+    </script>
+</body>
+</html>

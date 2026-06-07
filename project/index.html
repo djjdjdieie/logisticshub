@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogisticsHub - Система управления товарами</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Левая боковая панель -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">📦</div>
+                    <h1>LogisticsHub</h1>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span>Товары</span>
+                </a>
+                <a href="warehouses.html" class="nav-item">
+                    <span class="nav-icon">🏭</span>
+                    <span>Склады</span>
+                </a>
+                <a href="deliveries.html" class="nav-item">
+                    <span class="nav-icon">🚚</span>
+                    <span>Поставки</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>Отчеты</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <p class="user-name">Администратор</p>
+                        <p class="user-role">Менеджер</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="app.logout()">Выход</button>
+            </div>
+        </aside>
+
+        <!-- Главная область -->
+        <main class="main-content">
+            <!-- Верхняя панель -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <input id="dashboardSearch" type="text" class="search-input" placeholder="Поиск товаров, складов...">
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <div class="top-bar-actions">
+                    <div class="current-date" id="currentDate"></div>
+                </div>
+            </header>
+
+            <!-- Содержимое страницы -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p>Обзор деятельности логистической компании</p>
+                </div>
+
+                <!-- KPI Карточки -->
+                <section class="kpi-section">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <h3>Всего товаров</h3>
+                            <span class="kpi-icon">📦</span>
+                        </div>
+                        <div class="kpi-value" id="totalProducts">0</div>
+                        <div class="kpi-growth positive">
+                            <span class="growth-icon">📈</span>
+                            <span id="productsGrowth">+12%</span>
+                        </div>
+                        <canvas id="sparklineProducts" class="sparkline"></canvas>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <h3>Количество складов</h3>
+                            <span class="kpi-icon">🏭</span>
+                        </div>
+                        <div class="kpi-value" id="totalWarehouses">0</div>
+                        <div class="kpi-growth positive">
+                            <span class="growth-icon">📈</span>
+                            <span>+5%</span>
+                        </div>
+                        <canvas id="sparklineWarehouses" class="sparkline"></canvas>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <h3>Активные поставки</h3>
+                            <span class="kpi-icon">🚚</span>
+                        </div>
+                        <div class="kpi-value" id="activeDeliveries">0</div>
+                        <div class="kpi-growth positive">
+                            <span class="growth-icon">📈</span>
+                            <span>+8%</span>
+                        </div>
+                        <canvas id="sparklineDeliveries" class="sparkline"></canvas>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <h3>Сотрудники</h3>
+                            <span class="kpi-icon">👥</span>
+                        </div>
+                        <div class="kpi-value" id="totalEmployees">12</div>
+                        <div class="kpi-growth positive">
+                            <span class="growth-icon">📈</span>
+                            <span>+3%</span>
+                        </div>
+                        <canvas id="sparklineEmployees" class="sparkline"></canvas>
+                    </div>
+                </section>
+
+                <!-- Графики -->
+                <section class="charts-section">
+                    <div class="chart-container large">
+                        <h2>Движение товаров</h2>
+                        <canvas id="movementChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h2>Остатки товаров</h2>
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Таблица последних поставок -->
+                <section class="recent-section">
+                    <h2>Последние поставки</h2>
+                    <div class="table-wrapper">
+                        <table class="data-table deliveries-table">
+                            <thead>
+                                <tr>
+                                    <th>Номер</th>
+                                    <th>Поставщик</th>
+                                    <th>Склад</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentDeliveries">
+                                <tr>
+                                    <td colspan="5" class="empty-state">Нет данных</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Популярные товары -->
+                <section class="recent-section">
+                    <h2>Популярные товары</h2>
+                    <div class="table-wrapper">
+                        <table class="data-table products-table">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+                                    <th>Количество</th>
+                                    <th>Склад</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="popularProducts">
+                                <tr>
+                                    <td colspan="5" class="empty-state">Нет данных</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast уведомления -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Модальные окна -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2 id="confirmTitle">Подтверждение</h2>
+            <p id="confirmMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="app.closeModal('confirmModal')">Отмена</button>
+                <button class="btn btn-primary" id="confirmBtn">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="loadingModal">
+        <div class="modal-content loading-content">
+            <div class="loader"></div>
+            <p id="loadingText">Загрузка...</p>
+        </div>
+    </div>
+
+    <div class="login-panel" id="loginPanel">
+        <div class="login-panel-content">
+            <h2>Вход в LogisticsHub</h2>
+            <p>Используйте тестовые данные для доступа к панели управления.</p>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="loginUsername">Логин</label>
+                    <input type="text" id="loginUsername" placeholder="123" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="123" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+            <div class="login-panel-note">
+                <h3>Тестовые данные</h3>
+                <p><strong>123</strong> / <strong>123</strong></p>
+                <pre>app.login(event) проверяет эти данные и сохраняет состояние входа.</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-info">
+        <h2>Тестовые данные</h2>
+        <p><strong>123</strong> / <strong>123</strong></p>
+        <pre>Функция входа реализована в app.login(event); состояние хранится в LocalStorage.</pre>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
