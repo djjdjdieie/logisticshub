@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки - LogisticsHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Левая боковая панель -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">📦</div>
+                    <h1>LogisticsHub</h1>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span>Товары</span>
+                </a>
+                <a href="warehouses.html" class="nav-item">
+                    <span class="nav-icon">🏭</span>
+                    <span>Склады</span>
+                </a>
+                <a href="deliveries.html" class="nav-item">
+                    <span class="nav-icon">🚚</span>
+                    <span>Поставки</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>Отчеты</span>
+                </a>
+                <a href="settings.html" class="nav-item active">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <p class="user-name">Администратор</p>
+                        <p class="user-role">Менеджер</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="app.logout()">Выход</button>
+            </div>
+        </aside>
+
+        <!-- Главная область -->
+        <main class="main-content">
+            <!-- Верхняя панель -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Поиск настроек...">
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <div class="top-bar-actions">
+                    <div class="current-date" id="currentDate"></div>
+                </div>
+            </header>
+
+            <!-- Содержимое страницы -->
+            <div class="page-content">
+                <section class="page-header">
+                    <div>
+                        <span class="section-label">Настройки</span>
+                        <h2>Управление системой LogisticsHub</h2>
+                        <p>Единая панель управления ERP/CRM для логистики: стек, безопасность, визуальные настройки и диагностика в современном стиле.</p>
+                    </div>
+                    <article class="summary-card">
+                        <div>
+                            <p class="eyebrow">Статус интерфейса</p>
+                            <h3>Dark SaaS dashboard</h3>
+                        </div>
+                        <div class="tag-group">
+                            <span class="badge badge-primary">Dark Theme</span>
+                            <span class="badge badge-secondary">Premium UI</span>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="settings-grid">
+                    <div class="settings-panel settings-panel--main">
+                        <article class="settings-card card-main">
+                            <div class="card-head">
+                                <div>
+                                    <p class="eyebrow">Основные настройки</p>
+                                    <h3>Управление внешним видом и уведомлениями</h3>
+                                </div>
+                                <span class="badge badge-primary">Главный блок</span>
+                            </div>
+
+                            <div class="card-section">
+                                <div>
+                                    <h3>Внешний вид</h3>
+                                    <p class="card-description">Настройте общую тему и акценты, чтобы интерфейс выглядел как современный ERP/CRM продукт.</p>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Темная тема</h3>
+                                        <p>Включите удобный для глаз режим для продолжительной работы в темном окружении.</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" id="darkThemeToggle" checked disabled>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Цвет акцента</h3>
+                                        <p>Выберите основной цвет, чтобы настроить стиль панели.</p>
+                                    </div>
+                                    <div class="color-picker">
+                                        <button class="color-btn" style="background: #7C3AED;" onclick="settings.setColor('#7C3AED', this)" data-color="#7C3AED" title="Фиолетовый"></button>
+                                        <button class="color-btn" style="background: #06B6D4;" onclick="settings.setColor('#06B6D4', this)" data-color="#06B6D4" title="Голубой"></button>
+                                        <button class="color-btn" style="background: #EF4444;" onclick="settings.setColor('#EF4444', this)" data-color="#EF4444" title="Красный"></button>
+                                        <button class="color-btn" style="background: #10B981;" onclick="settings.setColor('#10B981', this)" data-color="#10B981" title="Зелёный"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-section">
+                                <div>
+                                    <h3>Уведомления</h3>
+                                    <p class="card-description">Настройте оповещения, чтобы получать уведомления о критичных событиях и статусах поставок.</p>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Уведомления о новых поставках</h3>
+                                        <p>Оповещения о новых поставках и изменениях в статусе.</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Уведомления о низком запасе</h3>
+                                        <p>Получайте предупреждения, когда количество товаров снижается.</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Звуковые уведомления</h3>
+                                        <p>Включить звуковые подсказки для важных событий.</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="settings-card">
+                            <h2>💾 Данные</h2>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>Экспорт данных</h3>
+                                    <p>Скачать резервную копию всех ключевых сущностей.</p>
+                                </div>
+                                <button class="btn btn-secondary" onclick="settings.exportData()">Загрузить</button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h3>Импорт данных</h3>
+                                    <p>Загрузить данные из файла JSON и восстановить состояния.</p>
+                                </div>
+                                <input type="file" id="importFile" accept=".json" style="display: none;">
+                                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Выбрать файл</button>
+                            </div>
+                            <div class="setting-item danger-item">
+                                <div class="setting-info">
+                                    <h3>Очистить все данные</h3>
+                                    <p>Удалить все данные системы. Сохранение не предусмотрено.</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="settings.clearAllData()">Очистить</button>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="settings-panel settings-panel--side">
+                        <article class="settings-card card-overview">
+                            <div class="card-head">
+                                <div>
+                                    <p class="eyebrow">О системе</p>
+                                    <h3>LogisticsHub Enterprise</h3>
+                                </div>
+                                <span class="badge badge-primary">Версия 1.0.0</span>
+                            </div>
+                            <p class="card-description">Централизованная ERP-платформа для управления поставками, складами и логистическими процессами с приоритетом на скорость, безопасность и удобный интерфейс.</p>
+                            <div class="overview-list">
+                                <div class="overview-item">
+                                    <span>Дата последнего обновления</span>
+                                    <strong id="overviewLastUpdate">05.06.2026</strong>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Используемые технологии</span>
+                                    <strong>HTML, CSS, JS, LocalStorage</strong>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Сведения о проекте</span>
+                                    <strong>ERP система логистики и складского учета</strong>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="settings-card card-stats">
+                            <h3>Ключевые метрики</h3>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <p>Всего товаров</p>
+                                    <span id="statTotalProducts">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <p>Всего складов</p>
+                                    <span id="statTotalWarehouses">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <p>Всего поставок</p>
+                                    <span id="statTotalDeliveries">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <p>Используемый объём</p>
+                                    <span id="storageSize">0 KB</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="settings-card card-support">
+                            <h3>Быстрый доступ</h3>
+                            <p class="card-description">Основные сервисы поддержки проекта и инструменты для управления рабочей зоной.</p>
+                            <div class="support-grid">
+                                <a class="support-item" href="#">
+                                    <strong>Документация</strong>
+                                    <span>Инструкции по настройке, экспорт и импорт.</span>
+                                </a>
+                                <a class="support-item" href="#">
+                                    <strong>Резервное копирование</strong>
+                                    <span>Создавайте копии данных вручную и автоматически.</span>
+                                </a>
+                                <a class="support-item" href="#">
+                                    <strong>Техподдержка</strong>
+                                    <span>Контакты команды и график работы.</span>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast уведомления -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Модальное окно подтверждения -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2 id="confirmTitle">Подтверждение</h2>
+            <p id="confirmMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="app.closeModal('confirmModal')">Отмена</button>
+                <button class="btn btn-primary" id="confirmBtn">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const settings = {
+            init() {
+                const darkThemeToggle = document.getElementById('darkThemeToggle');
+                const primaryColor = storage.getSetting('primaryColor', '#7C3AED');
+
+                if (darkThemeToggle) {
+                    darkThemeToggle.checked = true;
+                    darkThemeToggle.disabled = true;
+                }
+
+                document.body.classList.remove('light-theme');
+                document.documentElement.style.setProperty('--primary-color', primaryColor);
+                this.highlightColorButton(primaryColor);
+
+                const importFile = document.getElementById('importFile');
+                if (importFile) {
+                    importFile.addEventListener('change', (e) => this.importData(e));
+                }
+
+                this.updateStats();
+            },
+
+            highlightColorButton(color) {
+                document.querySelectorAll('.color-btn').forEach((button) => {
+                    button.classList.toggle('active', button.dataset.color === color);
+                });
+            },
+
+            setColor(color) {
+                document.documentElement.style.setProperty('--primary-color', color);
+                storage.saveSetting('primaryColor', color);
+                this.highlightColorButton(color);
+                app.showToast('Цвет успешно изменён', 'success');
+            },
+
+            exportData() {
+                const data = {
+                    products: storage.getProducts(),
+                    warehouses: storage.getWarehouses(),
+                    deliveries: storage.getDeliveries(),
+                    exportDate: new Date().toISOString()
+                };
+
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `logisticshub-export-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                app.showToast('Данные экспортированы', 'success');
+            },
+
+            importData(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const preservedSettings = storage.safeGet('settings', {});
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        localStorage.clear();
+                        localStorage.setItem('settings', JSON.stringify(preservedSettings));
+
+                        if (data.products) {
+                            data.products.forEach(p => storage.addProduct(p));
+                        }
+                        if (data.warehouses) {
+                            data.warehouses.forEach(w => storage.addWarehouse(w));
+                        }
+                        if (data.deliveries) {
+                            data.deliveries.forEach(d => storage.addDelivery(d));
+                        }
+
+                        app.showToast('Данные импортированы успешно', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } catch (error) {
+                        app.showToast('Ошибка при импорте данных', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            },
+
+            clearAllData() {
+                app.confirm(
+                    'Очистить все данные?',
+                    'Это действие удалит все товары, поставки и склады. Действие необратимо!',
+                    () => {
+                        const preservedSettings = storage.safeGet('settings', {});
+                        localStorage.clear();
+                        localStorage.setItem('settings', JSON.stringify(preservedSettings));
+                        app.showToast('Все данные удалены', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                );
+            },
+
+            updateStats() {
+                const products = storage.getProducts();
+                const warehouses = storage.getWarehouses();
+                const deliveries = storage.getDeliveries();
+
+                document.getElementById('statTotalProducts').textContent = products.length;
+                document.getElementById('statTotalWarehouses').textContent = warehouses.length;
+                document.getElementById('statTotalDeliveries').textContent = deliveries.length;
+                document.getElementById('statLastUpdate').textContent = new Date().toLocaleDateString('ru-RU');
+                const overviewLastUpdate = document.getElementById('overviewLastUpdate');
+                if (overviewLastUpdate) {
+                    overviewLastUpdate.textContent = new Date().toLocaleDateString('ru-RU');
+                }
+
+                let total = 0;
+                for (let key in localStorage) {
+                    if (localStorage.hasOwnProperty(key)) {
+                        total += localStorage[key].length + key.length;
+                    }
+                }
+                document.getElementById('storageSize').textContent = (total / 1024).toFixed(2);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            settings.init();
+        });
+    </script>
+</body>
+</html>
